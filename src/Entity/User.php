@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource()
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -53,6 +54,11 @@ class User
      * @ORM\Column(type="string", length=255)
      */
     private $prenom;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $dateNaissance;
 
     public function getId(): ?int
     {
@@ -139,6 +145,24 @@ class User
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+    //les fonction redefinis 
+    public function getRoles(){
+        return array('ROLE_USER');
+    }
+    public function getSalt(){}
+    public function eraseCredentials(){}
+
+    public function getDateNaissance(): ?\DateTimeInterface
+    {
+        return $this->dateNaissance;
+    }
+
+    public function setDateNaissance(\DateTimeInterface $dateNaissance): self
+    {
+        $this->dateNaissance = $dateNaissance;
 
         return $this;
     }

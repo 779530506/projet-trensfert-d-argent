@@ -7,9 +7,15 @@ use Faker\Factory;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    private $encode;
+    public function __construct(UserPasswordEncoderInterface $encode)
+    {
+      $this->encode=$encode;   
+    }
     public function load(ObjectManager $manager)
     { //le role admin systeme
        $roleAdminSystem=new Role();
@@ -29,13 +35,14 @@ class AppFixtures extends Fixture
         $faker = Factory::create('fr_FR');
 
         // on créé 10 users
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $user = new user();
             $user->setNom($faker->lastName);
             $user->setPrenom($faker->name);
-            $user->setTelephon($faker->numberBetween(770000000, 779999999));
-            $user->setUsername($faker->name);
-            $user->setPassword($faker->name);
+            $user->setTelephon($faker->phoneNumber);
+            $user->setUsername($faker->userName);
+            $user->setDateNaissance($faker->dateTimeBetween('-100 days', '-1 days'));
+            $user->setPassword($this->encode->encodePassword($user,'admin'));
             $user->setEmail($faker->email);
             $user->setRole($roleAdminSystem);
             $manager->persist($user);
