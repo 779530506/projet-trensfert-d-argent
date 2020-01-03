@@ -8,7 +8,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ApiResource()
+ * @ApiResource(
+ * attributes={"security"="is_granted('ROLE_ADMIN')"},
+ *     collectionOperations={
+ *         "get"={"security"="is_granted('ROLE_ADMIN')",
+ *                "security_message"="Désole vous n'etes pas autoriser."
+ *               },
+ *         "post"={"security"="is_granted('ROLE_ADMIN')",
+ *                "security_message"="Désole vous n'etes pas autoriser.",
+ *                }
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "put"={"security"="is_granted('ROLE_ADMIN') "},
+ *     }
+ * )
  */
 class User implements UserInterface
 {
@@ -59,6 +73,16 @@ class User implements UserInterface
      * @ORM\Column(type="date")
      */
     private $dateNaissance;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActif;
+
+    //le constructeur
+    public function __construc(){
+        $this->isActif=false;
+    }
 
     public function getId(): ?int
     {
@@ -150,7 +174,13 @@ class User implements UserInterface
     }
     //les fonction redefinis 
     public function getRoles(){
-        return array('ROLE_USER');
+        if($this->role->getLibelle()=="adminSystem"){
+        return array('ROLE_SUPADMIN');
+        }elseif($this->role->getLibelle()=="admin"){
+            return array('ROLE_ADMIN');
+            }elseif($this->role->getLibelle()=="caissier"){
+                return array('ROLE_CAISSIER');
+                }
     }
     public function getSalt(){}
     public function eraseCredentials(){}
@@ -163,6 +193,18 @@ class User implements UserInterface
     public function setDateNaissance(\DateTimeInterface $dateNaissance): self
     {
         $this->dateNaissance = $dateNaissance;
+
+        return $this;
+    }
+
+    public function getIsActif(): ?bool
+    {
+        return $this->isActif;
+    }
+
+    public function setIsActif(bool $isActif): self
+    {
+        $this->isActif = $isActif;
 
         return $this;
     }
