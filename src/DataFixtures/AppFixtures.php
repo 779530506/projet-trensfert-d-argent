@@ -44,6 +44,7 @@ class AppFixtures extends Fixture
             $user->setDateNaissance($faker->dateTimeBetween('-100 days', '-1 days'));
             $user->setPassword($this->encode->encodePassword($user,'admin'));
             $user->setEmail($faker->email);
+            $user->setAdresse($faker->address);
             $user->setIsActif($faker->boolean(true));
             $user->setRole($roleAdminSystem);
             $manager->persist($user);

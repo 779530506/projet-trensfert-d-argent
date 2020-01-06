@@ -3,13 +3,31 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
- * @ApiResource()
+ * @ApiResource(
+ * attributes={
+ *      
+ *     "security"="is_granted('ROLE_ADMIN')"},
+ *       collectionOperations={
+ *         "get"={"security"="is_granted('ROLE_ADMIN')",
+ *                "normalization_context"={"groups"={"read"}},
+ *               },
+ *      },
+ *     itemOperations={
+ *      "get"={},
+ *
+ *  },
+ * )
+ * @ApiFilter(SearchFilter::class,properties={"libelle":"iexact"})
  */
 class Role
 {
@@ -22,11 +40,14 @@ class Role
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("read")
+     * @Groups("admin:all")
      */
     private $libelle;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="role")
+     * @ApiSubresource(maxDepth=1)
      */
     private $users;
 

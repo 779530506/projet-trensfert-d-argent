@@ -3,28 +3,42 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Unique;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *  @UniqueEntity(
+ *   fields={"username"}
+ *   )
  * @ApiResource(
- * attributes={"security"="is_granted('ROLE_ADMIN')"},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')",
- *                "security_message"="Désole vous n'etes pas autoriser."
- *               },
- *         "post"={"security"="is_granted('ROLE_ADMIN')",
- *                "security_message"="Désole vous n'etes pas autoriser.",
- *                }
+ *         "get"={"normalization_context"={"groups"={"admin:all"}},} , 
+ *         "post"={
+ *                "security"="is_granted('ROLE_ADMIN')",
+ *                "denormalization_context"={"groups"={"admin:post"}}, 
+ *               }
  *     },
  *     itemOperations={
  *         "get",
- *         "put"={"security"="is_granted('ROLE_ADMIN') "},
+ *         "put"={
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *           "denormalization_context"={"groups"={"admin:input"}}}
  *     }
+ * 
  * )
+ *  @ApiFilter(BooleanFilter::class,properties={"isActif"})
+ * @ApiFilter(SearchFilter::class,properties={"role.libelle":"iexact"})
  */
-class User implements UserInterface
+    class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -35,49 +49,73 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
+     * @Groups("admin:all")
      */
     private $nom;
 
+     /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
+     * @Groups("admin:all")
+     */
+    private $prenom;
+
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
+     * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
+     * 
      */
     private $telephon;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
      */
     private $password;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role",cascade={"persist"}, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("admin:post")
+     * @Groups("admin:all")
+     * 
      */
     private $role;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $prenom;
+ 
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("admin:post")
+     * @Groups("admin:all")
      */
     private $dateNaissance;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups("admin:post")
+     * @Groups("admin:all")//pour l'affichage generale
      */
     private $isActif;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $adresse;
 
     //le constructeur
     public function __construc(){
@@ -205,6 +243,18 @@ class User implements UserInterface
     public function setIsActif(bool $isActif): self
     {
         $this->isActif = $isActif;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }
