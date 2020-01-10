@@ -13,32 +13,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  *  @UniqueEntity(
  *   fields={"username"}
  *   )
- * @ApiResource(
- *     collectionOperations={
- *         "get"={"normalization_context"={"groups"={"admin:all"}},} , 
- *         "post"={
- *                "security"="is_granted('ROLE_ADMIN')",
- *                "denormalization_context"={"groups"={"admin:post"}}, 
- *               }
- *     },
- *     itemOperations={
- *         "get",
- *         "put"={
- *           "security"="is_granted('ROLE_ADMIN')",
- *           "denormalization_context"={"groups"={"admin:input"}}}
- *     }
- * 
- * )
- *  @ApiFilter(BooleanFilter::class,properties={"isActif"})
+ * @ApiResource()
+ *  @ApiFilter(BooleanFilter::class,properties={"isActive"})
  * @ApiFilter(SearchFilter::class,properties={"role.libelle":"iexact"})
  */
-    class User implements UserInterface
+    class User implements AdvancedUserInterface
 {
     /**
      * @ORM\Id()
@@ -51,6 +37,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      * @ORM\Column(type="string", length=255)
      * @Groups("admin:post")
      * @Groups("admin:all")
+     * @Groups("get:item")
      */
     private $nom;
 
@@ -58,6 +45,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      * @ORM\Column(type="string", length=255)
      * @Groups("admin:post")
      * @Groups("admin:all")
+     * @Groups("get:item")
      */
     private $prenom;
 
@@ -65,37 +53,43 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      * @ORM\Column(type="string", length=255)
      * @Groups("admin:post")
      * @Assert\Email()
+     * @Groups("get:item")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("admin:post")
+     * @Groups("get:item")
      * 
      */
     private $telephon;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
-     */
-    private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups("admin:post")
+     * @Groups("get:item")
      */
-    private $password;
+    private $adresse;
+
+
 
     /**
+     *    pour la liaison avec la table role
      * @ORM\ManyToOne(targetEntity="App\Entity\Role",cascade={"persist"}, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("admin:post")
      * @Groups("admin:all")
+     * @Groups("get:item")
      * 
      */
     private $role;
-
+    /**
+   * @ORM\Column(type="json")
+     * @Groups("admin:post")
+     */
+    private $roles= [];
  
 
     /**
@@ -108,20 +102,30 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     /**
      * @ORM\Column(type="boolean")
      * @Groups("admin:post")
-     * @Groups("admin:all")//pour l'affichage generale
+     * @Groups("admin:all")
+     * @Groups("get:item")
      */
-    private $isActif;
+    private $isActive;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
+     * @Groups("get:item")
      */
-    private $adresse;
+    private $username;
+
+    /**
+   * @ORM\Column(type="string", length=255)
+     * @Groups("admin:post")
+     */
+    private $password;
+
 
     //le constructeur
-    public function __construc(){
-        $this->isActif=false;
-    }
+    public function __construct(){
+        $this->isActive=false;
 
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -210,16 +214,22 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
         return $this;
     }
-    //les fonction redefinis 
-    public function getRoles(){
-        if($this->role->getLibelle()=="adminSystem"){
-        return array('ROLE_SUPADMIN');
-        }elseif($this->role->getLibelle()=="admin"){
-            return array('ROLE_ADMIN');
-            }elseif($this->role->getLibelle()=="caissier"){
-                return array('ROLE_CAISSIER');
-                }
+   
+      /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
     public function getSalt(){}
     public function eraseCredentials(){}
 
@@ -235,27 +245,58 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         return $this;
     }
 
-    public function getIsActif(): ?bool
+    public function getisActive(): ?bool
     {
-        return $this->isActif;
+        return $this->isActive;
     }
 
-    public function setIsActif(bool $isActif): self
+    public function setisActive(bool $isActive): self
     {
-        $this->isActif = $isActif;
+        $this->isActive = $isActive;
 
         return $this;
     }
 
-    public function getAdresse(): ?string
+    /**
+     * Get the value of adresse
+     */ 
+    public function getAdresse()
     {
         return $this->adresse;
     }
 
-    public function setAdresse(?string $adresse): self
+    /**
+     * Set the value of adresse
+     *
+     * @return  self
+     */ 
+    public function setAdresse($adresse)
     {
         $this->adresse = $adresse;
 
         return $this;
     }
+
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+
+    public function isEnabled()
+    {
+        return $this->isActive;
+    }
+
+
 }

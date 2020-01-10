@@ -45,7 +45,8 @@ class AppFixtures extends Fixture
             $user->setPassword($this->encode->encodePassword($user,'admin'));
             $user->setEmail($faker->email);
             $user->setAdresse($faker->address);
-            $user->setIsActif($faker->boolean(true));
+            $user->setIsActive($faker->boolean(true));
+            $user->setRoles(["ROLE_SUPADMIN"]);
             $user->setRole($roleAdminSystem);
             $manager->persist($user);
         }
