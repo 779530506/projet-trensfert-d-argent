@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -120,10 +122,22 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      */
     private $password;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="userCreateur")
+     */
+    private $comptes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="userDepot")
+     */
+    private $depots;
+
 
     //le constructeur
     public function __construct(){
         $this->isActive=false;
+        $this->comptes = new ArrayCollection();
+        $this->depots = new ArrayCollection();
 
     }
     public function getId(): ?int
@@ -296,6 +310,68 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     public function isEnabled()
     {
         return $this->isActive;
+    }
+
+    /**
+     * @return Collection|Compte[]
+     */
+    public function getComptes(): Collection
+    {
+        return $this->comptes;
+    }
+
+    public function addCompte(Compte $compte): self
+    {
+        if (!$this->comptes->contains($compte)) {
+            $this->comptes[] = $compte;
+            $compte->setUserCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompte(Compte $compte): self
+    {
+        if ($this->comptes->contains($compte)) {
+            $this->comptes->removeElement($compte);
+            // set the owning side to null (unless already changed)
+            if ($compte->getUserCreateur() === $this) {
+                $compte->setUserCreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setUserDepot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getUserDepot() === $this) {
+                $depot->setUserDepot(null);
+            }
+        }
+
+        return $this;
     }
 
 

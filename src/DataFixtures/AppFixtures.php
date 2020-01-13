@@ -19,15 +19,15 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     { //le role admin systeme
        $roleAdminSystem=new Role();
-       $roleAdminSystem->setLibelle("adminSystem");
+       $roleAdminSystem->setLibelle("SUPADMIN");
        $manager->persist($roleAdminSystem);
        //le role admin
        $roleAdmin=new Role();
-       $roleAdmin->setLibelle("admin");
+       $roleAdmin->setLibelle("ADMIN");
        $manager->persist($roleAdmin);
        //le role caissier
        $roleCaissier=new Role();
-       $roleCaissier->setLibelle("caissier");
+       $roleCaissier->setLibelle("CAISSIER");
        $manager->persist($roleCaissier);
 
        $manager->flush();
@@ -46,7 +46,7 @@ class AppFixtures extends Fixture
             $user->setEmail($faker->email);
             $user->setAdresse($faker->address);
             $user->setIsActive($faker->boolean(true));
-            $user->setRoles(["ROLE_SUPADMIN"]);
+            $user->setRoles(["ROLE_".$roleAdminSystem->getLibelle()]);
             $user->setRole($roleAdminSystem);
             $manager->persist($user);
         }
