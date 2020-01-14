@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -41,7 +41,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("admin:all")
      * @Groups("get:item")
      */
-    private $nom;
+    protected $nom;
 
      /**
      * @ORM\Column(type="string", length=255)
@@ -49,7 +49,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("admin:all")
      * @Groups("get:item")
      */
-    private $prenom;
+    protected $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -57,7 +57,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Assert\Email()
      * @Groups("get:item")
      */
-    private $email;
+    protected $email;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -65,7 +65,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("get:item")
      * 
      */
-    private $telephon;
+    protected $telephon;
 
 
     /**
@@ -73,7 +73,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("admin:post")
      * @Groups("get:item")
      */
-    private $adresse;
+    protected $adresse;
 
 
 
@@ -86,12 +86,12 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("get:item")
      * 
      */
-    private $role;
+    protected $role;
     /**
    * @ORM\Column(type="json")
      * @Groups("admin:post")
      */
-    private $roles= [];
+    protected $roles= [];
  
 
     /**
@@ -99,7 +99,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("admin:post")
      * @Groups("admin:all")
      */
-    private $dateNaissance;
+    protected $dateNaissance;
 
     /**
      * @ORM\Column(type="boolean")
@@ -107,37 +107,31 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("admin:all")
      * @Groups("get:item")
      */
-    private $isActive;
+    protected $isActive;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("admin:post")
      * @Groups("get:item")
      */
-    private $username;
+    protected $username;
 
     /**
    * @ORM\Column(type="string", length=255)
      * @Groups("admin:post")
      */
-    private $password;
+    protected $password;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="userCreateur")
-     */
-    private $comptes;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="userDepot")
      */
-    private $depots;
+    protected $depots;
 
 
     //le constructeur
     public function __construct(){
         $this->isActive=false;
-        $this->comptes = new ArrayCollection();
-        $this->depots = new ArrayCollection();
 
     }
     public function getId(): ?int
@@ -312,67 +306,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
         return $this->isActive;
     }
 
-    /**
-     * @return Collection|Compte[]
-     */
-    public function getComptes(): Collection
-    {
-        return $this->comptes;
-    }
-
-    public function addCompte(Compte $compte): self
-    {
-        if (!$this->comptes->contains($compte)) {
-            $this->comptes[] = $compte;
-            $compte->setUserCreateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompte(Compte $compte): self
-    {
-        if ($this->comptes->contains($compte)) {
-            $this->comptes->removeElement($compte);
-            // set the owning side to null (unless already changed)
-            if ($compte->getUserCreateur() === $this) {
-                $compte->setUserCreateur(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Depot[]
-     */
-    public function getDepots(): Collection
-    {
-        return $this->depots;
-    }
-
-    public function addDepot(Depot $depot): self
-    {
-        if (!$this->depots->contains($depot)) {
-            $this->depots[] = $depot;
-            $depot->setUserDepot($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDepot(Depot $depot): self
-    {
-        if ($this->depots->contains($depot)) {
-            $this->depots->removeElement($depot);
-            // set the owning side to null (unless already changed)
-            if ($depot->getUserDepot() === $this) {
-                $depot->setUserDepot(null);
-            }
-        }
-
-        return $this;
-    }
-
+   
 
 }

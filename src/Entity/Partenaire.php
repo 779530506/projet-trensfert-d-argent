@@ -1,47 +1,37 @@
 <?php
 
 namespace App\Entity;
-
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
+ * @ApiResource()
  */
-class Partenaire
+class Partenaire 
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=10)
      */
-    private $ninea;
+    protected $ninea;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $registreDuCommerce;
+    protected $registreDuCommerce;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="partenaire", orphanRemoval=true)
-     */
-    private $comptes;
-
-    public function __construct()
-    {
-        $this->comptes = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getNinea(): ?string
     {
@@ -64,37 +54,21 @@ class Partenaire
     {
         $this->registreDuCommerce = $registreDuCommerce;
 
-        return $this;
+         return $this;
     }
+
+  
+    
+
+
+
+  
 
     /**
-     * @return Collection|Compte[]
-     */
-    public function getComptes(): Collection
+     * Get the value of id
+     */ 
+    public function getId()
     {
-        return $this->comptes;
-    }
-
-    public function addCompte(Compte $compte): self
-    {
-        if (!$this->comptes->contains($compte)) {
-            $this->comptes[] = $compte;
-            $compte->setPartenaire($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompte(Compte $compte): self
-    {
-        if ($this->comptes->contains($compte)) {
-            $this->comptes->removeElement($compte);
-            // set the owning side to null (unless already changed)
-            if ($compte->getPartenaire() === $this) {
-                $compte->setPartenaire(null);
-            }
-        }
-
-        return $this;
+        return $this->id;
     }
 }

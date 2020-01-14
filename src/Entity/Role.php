@@ -51,9 +51,11 @@ class Role
      */
     private $users;
 
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->partenaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,4 +105,6 @@ class Role
 
         return $this;
     }
+
+
 }

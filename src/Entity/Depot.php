@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DepotRepository")
+ * @ApiResource()
  */
 class Depot
 {
@@ -26,17 +28,8 @@ class Depot
      */
     private $dateDepot;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $userDepot;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $compte;
+    
 
     public function getId(): ?int
     {
@@ -67,27 +60,4 @@ class Depot
         return $this;
     }
 
-    public function getUserDepot(): ?User
-    {
-        return $this->userDepot;
-    }
-
-    public function setUserDepot(?User $userDepot): self
-    {
-        $this->userDepot = $userDepot;
-
-        return $this;
-    }
-
-    public function getCompte(): ?Compte
-    {
-        return $this->compte;
-    }
-
-    public function setCompte(?Compte $compte): self
-    {
-        $this->compte = $compte;
-
-        return $this;
-    }
 }
