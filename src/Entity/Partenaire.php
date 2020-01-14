@@ -12,15 +12,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
  * @ApiResource()
  */
-class Partenaire 
+class Partenaire extends User
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
 
     /**
      * @ORM\Column(type="string", length=10)
@@ -55,20 +49,5 @@ class Partenaire
         $this->registreDuCommerce = $registreDuCommerce;
 
          return $this;
-    }
-
-  
-    
-
-
-
-  
-
-    /**
-     * Get the value of id
-     */ 
-    public function getId()
-    {
-        return $this->id;
     }
 }
