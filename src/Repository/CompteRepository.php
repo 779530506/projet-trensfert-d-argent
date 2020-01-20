@@ -19,6 +19,15 @@ class CompteRepository extends ServiceEntityRepository
         parent::__construct($registry, Compte::class);
     }
 
+    public function getLastCompte():array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = ' SELECT id FROM compte ORDER BY id DESC LIMIT 1 ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
     // /**
     //  * @return Compte[] Returns an array of Compte objects
     //  */

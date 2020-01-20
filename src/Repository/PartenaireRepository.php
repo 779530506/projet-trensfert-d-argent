@@ -18,6 +18,14 @@ class PartenaireRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Partenaire::class);
     }
+    public function getLastPartenaire():array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = ' SELECT id FROM partenaire ORDER BY id DESC LIMIT 1 ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
 
     // /**
     //  * @return Partenaire[] Returns an array of Partenaire objects

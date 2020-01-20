@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *   fields={"username"}
  *   )
  * @ApiResource()
- *  @ApiFilter(BooleanFilter::class,properties={"isActive"})
+ * @ApiFilter(BooleanFilter::class,properties={"isActive"})
  * @ApiFilter(SearchFilter::class,properties={"role.libelle":"iexact"})
  * @ORM\InheritanceType("JOINED")
  */
@@ -39,32 +39,22 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
-     * @Groups("admin:all")
-     * @Groups("get:item")
      */
     protected $nom;
 
      /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
-     * @Groups("admin:all")
-     * @Groups("get:item")
      */
     protected $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
      * @Assert\Email()
-     * @Groups("get:item")
      */
     protected $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
-     * @Groups("get:item")
      * 
      */
     protected $telephon;
@@ -72,8 +62,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups("admin:post")
-     * @Groups("get:item")
      */
     protected $adresse;
 
@@ -82,16 +70,11 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     /**
      *    pour la liaison avec la table role
      * @ORM\ManyToOne(targetEntity="App\Entity\Role",cascade={"persist"}, inversedBy="users")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups("admin:post")
-     * @Groups("admin:all")
-     * @Groups("get:item")
      * 
      */
     protected $role;
     /**
-   * @ORM\Column(type="json")
-     * @Groups("admin:post")
+     * @ORM\Column(type="json")
      */
     protected $roles= [];
  
@@ -113,14 +96,12 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
-     * @Groups("get:item")
+     *
      */
     protected $username;
 
     /**
    * @ORM\Column(type="string", length=255)
-     * @Groups("admin:post")
      */
     protected $password;
 
