@@ -124,16 +124,17 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      */
     protected $password;
 
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="userDepot")
      */
-    protected $depots;
+    private $depots;
+
 
 
     //le constructeur
     public function __construct(){
         $this->isActive=false;
+        $this->depots = new ArrayCollection();
 
     }
     public function getId(): ?int
@@ -306,6 +307,37 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     public function isEnabled()
     {
         return $this->isActive;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setUserDepot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getUserDepot() === $this) {
+                $depot->setUserDepot(null);
+            }
+        }
+
+        return $this;
     }
 
    

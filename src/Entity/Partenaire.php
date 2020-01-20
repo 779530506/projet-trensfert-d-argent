@@ -26,6 +26,17 @@ class Partenaire extends User
      */
     protected $registreDuCommerce;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="partenaire", orphanRemoval=true)
+     */
+    private $comptes;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->comptes = new ArrayCollection();
+    }
+
 
     public function getNinea(): ?string
     {
@@ -49,5 +60,36 @@ class Partenaire extends User
         $this->registreDuCommerce = $registreDuCommerce;
 
          return $this;
+    }
+
+    /**
+     * @return Collection|Compte[]
+     */
+    public function getComptes(): Collection
+    {
+        return $this->comptes;
+    }
+
+    public function addCompte(Compte $compte): self
+    {
+        if (!$this->comptes->contains($compte)) {
+            $this->comptes[] = $compte;
+            $compte->setPartenaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompte(Compte $compte): self
+    {
+        if ($this->comptes->contains($compte)) {
+            $this->comptes->removeElement($compte);
+            // set the owning side to null (unless already changed)
+            if ($compte->getPartenaire() === $this) {
+                $compte->setPartenaire(null);
+            }
+        }
+
+        return $this;
     }
 }

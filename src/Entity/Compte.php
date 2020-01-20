@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
+ * @ApiResource()
  */
 class Compte
 {
@@ -32,6 +34,28 @@ class Compte
      * @ORM\Column(type="date")
      */
     private $createdDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $partenaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="compte")
+     */
+    private $depots;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $userCreateur;
+
+    public function __construct()
+    {
+        $this->depots = new ArrayCollection();
+    }
 
 
 
@@ -73,6 +97,61 @@ class Compte
     public function setCreatedDate(\DateTimeInterface $createdDate): self
     {
         $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getCompte() === $this) {
+                $depot->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUserCreateur(): ?User
+    {
+        return $this->userCreateur;
+    }
+
+    public function setUserCreateur(?User $userCreateur): self
+    {
+        $this->userCreateur = $userCreateur;
 
         return $this;
     }

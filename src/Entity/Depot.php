@@ -28,6 +28,17 @@ class Depot
      */
     private $dateDepot;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots")
+     */
+    private $compte;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $userDepot;
+
 
     
 
@@ -56,6 +67,30 @@ class Depot
     public function setDateDepot(\DateTimeInterface $dateDepot): self
     {
         $this->dateDepot = $dateDepot;
+
+        return $this;
+    }
+
+    public function getCompte(): ?Compte
+    {
+        return $this->compte;
+    }
+
+    public function setCompte(?Compte $compte): self
+    {
+        $this->compte = $compte;
+
+        return $this;
+    }
+
+    public function getUserDepot(): ?User
+    {
+        return $this->userDepot;
+    }
+
+    public function setUserDepot(?User $userDepot): self
+    {
+        $this->userDepot = $userDepot;
 
         return $this;
     }
