@@ -19,7 +19,7 @@ class PartenairePersister implements DataPersisterInterface{
     public function persist($data)
     {
         $lastPartenaire=$this->repo->getLastPartenaire();
-        $lastId=$lastPartenaire['id'];
+        $lastId=$lastPartenaire['id']+1;
         $data->setNinea(sprintf("NIN-%05d",$lastId));
         $data->setRegistreDuCommerce(sprintf("RC-%05d",$lastId));
         $this->em->persist($data);

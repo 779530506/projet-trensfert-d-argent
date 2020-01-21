@@ -2,34 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Compte;
+use App\Entity\Contrat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method Compte|null find($id, $lockMode = null, $lockVersion = null)
- * @method Compte|null findOneBy(array $criteria, array $orderBy = null)
- * @method Compte[]    findAll()
- * @method Compte[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Contrat|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Contrat|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Contrat[]    findAll()
+ * @method Contrat[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CompteRepository extends ServiceEntityRepository
+class ContratRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Compte::class);
-    }
-
-    public function getLastCompte()
-    {
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = ' SELECT id FROM compte ORDER BY id DESC LIMIT 1 ';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetch();
+        parent::__construct($registry, Contrat::class);
     }
 
     // /**
-    //  * @return Compte[] Returns an array of Compte objects
+    //  * @return Contrat[] Returns an array of Contrat objects
     //  */
     /*
     public function findByExampleField($value)
@@ -46,7 +37,7 @@ class CompteRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Compte
+    public function findOneBySomeField($value): ?Contrat
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')

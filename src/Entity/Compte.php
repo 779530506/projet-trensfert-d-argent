@@ -3,15 +3,18 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
  * @ApiResource()
+ * @ApiFilter(SearchFilter::class,properties={"numeroCompte":"ipartial"})
  */
 class Compte
 {
@@ -56,6 +59,12 @@ class Compte
      * @ORM\JoinColumn(nullable=false)
      */
     private $userCreateur;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Contrat", inversedBy="comptes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $contrat;
 
     public function __construct()
     {
@@ -157,6 +166,18 @@ class Compte
     public function setUserCreateur(?User $userCreateur): self
     {
         $this->userCreateur = $userCreateur;
+
+        return $this;
+    }
+
+    public function getContrat(): ?Contrat
+    {
+        return $this->contrat;
+    }
+
+    public function setContrat(?Contrat $contrat): self
+    {
+        $this->contrat = $contrat;
 
         return $this;
     }

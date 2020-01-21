@@ -20,7 +20,7 @@ class ComptePersister implements DataPersisterInterface{
     public function persist($data)
     {
         $lastCompte=$this->repo->getLastCompte();
-        $lastId=$lastCompte['id'];
+        $lastId=$lastCompte['id']+1;
         $data->setNumeroCompte(sprintf("NCP-%05d",$lastId));
         $data->setCreatedDate(new \DateTime());
         $this->em->persist($data);

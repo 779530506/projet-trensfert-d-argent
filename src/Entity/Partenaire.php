@@ -3,14 +3,16 @@
 namespace App\Entity;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
- * @ApiResource()
+ * @ApiFilter(SearchFilter::class,properties={"ninea":"ipartial"})
  */
 class Partenaire extends User
 {
