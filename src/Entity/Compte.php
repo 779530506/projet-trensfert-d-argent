@@ -79,11 +79,6 @@ class Compte
      */
     private $userCreateur;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Contrat", inversedBy="comptes")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $contrat;
 
     public function __construct()
     {
@@ -188,19 +183,6 @@ class Compte
 
         return $this;
     }
-
-    public function getContrat(): ?Contrat
-    {
-        return $this->contrat;
-    }
-
-    public function setContrat(?Contrat $contrat): self
-    {
-        $this->contrat = $contrat;
-
-        return $this;
-    }
-
    
 
 }

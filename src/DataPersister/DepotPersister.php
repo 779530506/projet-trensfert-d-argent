@@ -13,7 +13,7 @@ class DepotPersister implements DataPersisterInterface{
     }
     public function supports($data): bool
     {
-        return  $data instanceof Depot;
+        return  $data instanceof Depot ;
     }
     public function persist($data)
     {

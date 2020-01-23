@@ -7,18 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DepotRepository")
- * @ApiResource(
- *  attributes={"security"="is_granted('ROLE_CAISSIER')"},
- *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_CAISSIER')"},
- *         "post"={"security"="is_granted('ROLE_CAISSIER')"}
- *     },
- *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')"},
- *         "put"={"security"="is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
- *     }
- * )
+ * @ApiResource()
  */
 class Depot
 {
@@ -40,18 +29,16 @@ class Depot
     private $dateDepot;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $compte;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $userDepot;
-
-
-    
 
     public function getId(): ?int
     {
@@ -105,5 +92,4 @@ class Depot
 
         return $this;
     }
-
 }
