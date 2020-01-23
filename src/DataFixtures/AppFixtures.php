@@ -30,6 +30,10 @@ class AppFixtures extends Fixture
        $roleCaissier->setLibelle("CAISSIER");
        $manager->persist($roleCaissier);
 
+       $rolePartenaire=new Role();
+       $rolePartenaire->setLibelle("Partenaire");
+       $manager->persist($rolePartenaire);
+
        $manager->flush();
 
         $faker = Factory::create('fr_FR');
