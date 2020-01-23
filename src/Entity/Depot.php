@@ -7,7 +7,18 @@ use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DepotRepository")
- * @ApiResource()
+ * @ApiResource(
+ *  attributes={"security"="is_granted('ROLE_CAISSIER')"},
+ *     collectionOperations={
+ *         "get"={"security"="is_granted('ROLE_CAISSIER')"},
+ *         "post"={"security"="is_granted('ROLE_CAISSIER')"}
+ *     },
+ *     itemOperations={
+ *         "get"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "put"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *     }
+ * )
  */
 class Depot
 {

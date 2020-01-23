@@ -23,7 +23,30 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *  @UniqueEntity(
  *   fields={"username"}
  *   )
- * @ApiResource()
+ * @ApiResource(
+ * attributes={"security"="is_granted('ROLE_ADMIN')"},
+ *     collectionOperations={
+ *     "get"={
+ *               "security"="is_granted('ROLE_ADMIN')",
+ *                "normalization_context"={"groups"={"get:all"}},
+ *              }, 
+ *          "post"={
+ *            "security"="is_granted('ROLE_ADMIN')",
+ *            "normalization_context"={"groups"={"post:all"}},
+ *   }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *            "normalization_context"={"groups"={"get:one"}},
+ *        },
+ *         "put"={
+ *        "security"="is_granted('ROLE_ADMIN')",
+ *        "normalization_context"={"groups"={"put:one"}},
+ *      },
+ *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *     }
+ * )
  * @ApiFilter(BooleanFilter::class,properties={"isActive"})
  * @ApiFilter(SearchFilter::class,properties={"role.libelle":"iexact"})
  * @ORM\InheritanceType("JOINED")
@@ -39,29 +62,49 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("get:all")
+     * @Groups("post:all")
+     * @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $nom;
 
      /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("get:all")
+     * @Groups("post:all")
+     *  @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Email()
+     * @Groups("get:all")
+     * @Groups("post:all")
+     * @Groups("put:one")
+     * @Groups("get:one")
+     * 
      */
     protected $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * 
+     * @Groups("get:all") 
+     * @Groups("post:all")
+     * @Groups("get:one") 
+     * @Groups("put:one")
      */
     protected $telephon;
 
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *  @Groups("get:all")
+     *  @Groups("post:all")
+     *  @Groups("get:one")
+     *  @Groups("put:one")
      */
     protected $adresse;
 
@@ -70,46 +113,57 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     /**
      *    pour la liaison avec la table role
      * @ORM\ManyToOne(targetEntity="App\Entity\Role",cascade={"persist"}, inversedBy="users")
-     * 
+     *  @Groups("get:all")
+     *  @Groups("post:all")
+     *  @Groups("get:one")
+     *  @Groups("put:one")
      */
     protected $role;
     /**
      * @ORM\Column(type="json")
+     *  @Groups("get:all")
+     *  @Groups("post:all")
+     *  @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $roles= [];
  
 
     /**
      * @ORM\Column(type="date")
-     * @Groups("admin:post")
-     * @Groups("admin:all")
+     * @Groups("post:all")
+     * @Groups("get:all")
+     *  @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $dateNaissance;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups("admin:post")
-     * @Groups("admin:all")
-     * @Groups("get:item")
+     * @Groups("post:all")
+     * @Groups("get:all")
+     *  @Groups("get:one")
+     *  @Groups("put:one")
      */
     protected $isActive;
 
     /**
      * @ORM\Column(type="string", length=255)
-     *
+     * @Groups("get:all")
+     * @Groups("post:all")
+     *  @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $username;
 
     /**
-   * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255)
+     * @Groups("get:all")
+     * @Groups("post:all")
+     *  @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $password;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="userDepot")
-     */
-    private $depots;
-
 
 
     //le constructeur
@@ -290,37 +344,5 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
         return $this->isActive;
     }
 
-    /**
-     * @return Collection|Depot[]
-     */
-    public function getDepots(): Collection
-    {
-        return $this->depots;
-    }
-
-    public function addDepot(Depot $depot): self
-    {
-        if (!$this->depots->contains($depot)) {
-            $this->depots[] = $depot;
-            $depot->setUserDepot($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDepot(Depot $depot): self
-    {
-        if ($this->depots->contains($depot)) {
-            $this->depots->removeElement($depot);
-            // set the owning side to null (unless already changed)
-            if ($depot->getUserDepot() === $this) {
-                $depot->setUserDepot(null);
-            }
-        }
-
-        return $this;
-    }
-
-   
-
+  
 }

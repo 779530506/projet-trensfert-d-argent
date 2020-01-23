@@ -7,13 +7,28 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
- * @ApiResource()
+ * @ApiResource(
+ *  attributes={"security"="is_granted('ROLE_ADMIN')"},
+ *     collectionOperations={
+ *         "get"={
+ *        "security"="is_granted('ROLE_ADMIN')",
+ *         "normalization_context"={"groups"={"get:all"}},
+ *        },
+ *         "post"={"security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *     itemOperations={
+ *         "get"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "put"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *     }
+ * )
  * @ApiFilter(SearchFilter::class,properties={"numeroCompte":"ipartial"})
  */
 class Compte
@@ -27,6 +42,7 @@ class Compte
 
     /**
      * @ORM\Column(type="string", length=9)
+     * @Groups("get:all")
      */
     private $numeroCompte;
 
@@ -35,17 +51,20 @@ class Compte
      * @Assert\GreaterThanOrEqual(
      *     value = 500000
      * )
+     * @Groups("get:all")
      */
     private $solde;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("get:all")
      */
     private $createdDate;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
      * @ORM\JoinColumn(nullable=false)
+     * 
      */
     private $partenaire;
 

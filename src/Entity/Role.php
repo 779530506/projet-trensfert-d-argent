@@ -12,20 +12,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
- * @ApiResource(
- * attributes={
- *      
- *     "security"="is_granted('ROLE_ADMIN')"},
- *       collectionOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')",
- *                "normalization_context"={"groups"={"read"}},
- *               },
- *      },
- *     itemOperations={
- *      "get"={},
- *
- *  },
+     * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
+     * @ApiResource(
+     *  attributes={"security"="is_granted('ROLE_ADMIN')"},
+     *     collectionOperations={
+     *         "get"={"security"="is_granted('ROLE_ADMIN')"},
+     *         "post"={"security"="is_granted('ROLE_ADMIN')"}
+     *     },
+     *     itemOperations={
+     *         "get"={"security"="is_granted('ROLE_ADMIN')"},
+     *         "put"={"security"="is_granted('ROLE_ADMIN')"},
+     *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
+     *     }
+     * )
  * )
  * @ApiFilter(SearchFilter::class,properties={"libelle":"iexact"})
  */
@@ -47,7 +46,7 @@ class Role
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="role")
-     * @ApiSubresource(maxDepth=1)
+     * @ApiSubresource()
      */
     private $users;
 

@@ -9,7 +9,8 @@ security:
                 property: username
     role_hierarchy:
          ROLE_SUPADMIN:       [ROLE_ADMIN, ROLE_CAISSIER] 
-         ROLE_ADMIN:     ROLE_CAISSIER   
+         ROLE_ADMIN:     ROLE_CAISSIER 
+         ROLE_CAISSIER: ROLE_PARTENAIRE  
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
