@@ -15,18 +15,16 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
  * @ApiResource(
- *  attributes={"security"="is_granted('ROLE_ADMIN')"},
  *     collectionOperations={
  *         "get"={
- *        "security"="is_granted('ROLE_ADMIN')",
  *         "normalization_context"={"groups"={"get:all"}},
  *        },
- *         "post"={"security"="is_granted('ROLE_ADMIN')"}
+ *         "post"={}
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')"},
- *         "put"={"security"="is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "get"={},
+ *         "put"={},
+ *         "delete"={},
  *     }
  * )
  * @ApiFilter(SearchFilter::class,properties={"numeroCompte":"ipartial"})
@@ -62,13 +60,6 @@ class Compte
     private $createdDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
-     * @ORM\JoinColumn(nullable=false)
-     * 
-     */
-    private $partenaire;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="compte")
      */
     private $depots;
@@ -79,10 +70,22 @@ class Compte
      */
     private $userCreateur;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compte", orphanRemoval=true)
+     */
+    private $transactions;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $partenaire;
+
 
     public function __construct()
     {
         $this->depots = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
 
@@ -129,17 +132,6 @@ class Compte
         return $this;
     }
 
-    public function getPartenaire(): ?Partenaire
-    {
-        return $this->partenaire;
-    }
-
-    public function setPartenaire(?Partenaire $partenaire): self
-    {
-        $this->partenaire = $partenaire;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Depot[]
@@ -183,6 +175,50 @@ class Compte
 
         return $this;
     }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getCompte() === $this) {
+                $transaction->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
    
 
 }

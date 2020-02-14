@@ -1,44 +1,40 @@
 <?php
 
 namespace App\Entity;
-use App\Entity\User;
+
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
- * @ApiResource(
- * attributes={"security"="is_granted('ROLE_ADMIN')"},
- *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')"},
- *         "post"={"security"="is_granted('ROLE_ADMIN')"}
- *     },
- *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')"},
- *         "put"={"security"="is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
- *     }
- * )
- * @ApiFilter(SearchFilter::class,properties={"ninea":"ipartial"})
+ * @ApiResource()
  */
-class Partenaire extends User
+class Partenaire
 {
-
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
 
     /**
      * @ORM\Column(type="string", length=10)
      */
-    protected $ninea;
+    private $ninea;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $registreDuCommerce;
+    private $registreDuCommerce;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $users;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="partenaire", orphanRemoval=true)
@@ -47,10 +43,14 @@ class Partenaire extends User
 
     public function __construct()
     {
-        parent::__construct();
+        $this->users = new ArrayCollection();
         $this->comptes = new ArrayCollection();
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getNinea(): ?string
     {
@@ -73,7 +73,38 @@ class Partenaire extends User
     {
         $this->registreDuCommerce = $registreDuCommerce;
 
-         return $this;
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setPartenaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            // set the owning side to null (unless already changed)
+            if ($user->getPartenaire() === $this) {
+                $user->setPartenaire(null);
+            }
+        }
+
+        return $this;
     }
 
     /**

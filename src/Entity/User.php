@@ -24,32 +24,26 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *   fields={"username"}
  *   )
  * @ApiResource(
- * attributes={"security"="is_granted('ROLE_ADMIN')"},
  *     collectionOperations={
  *     "get"={
- *               "security"="is_granted('ROLE_ADMIN')",
  *                "normalization_context"={"groups"={"get:all"}},
  *              }, 
  *          "post"={
- *            "security"="is_granted('ROLE_ADMIN')",
  *            "normalization_context"={"groups"={"post:all"}},
  *   }
  *     },
  *     itemOperations={
  *         "get"={
- *           "security"="is_granted('ROLE_ADMIN')",
  *            "normalization_context"={"groups"={"get:one"}},
  *        },
  *         "put"={
- *        "security"="is_granted('ROLE_ADMIN')",
  *        "normalization_context"={"groups"={"put:one"}},
  *      },
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "delete"={},
  *     }
  * )
  * @ApiFilter(BooleanFilter::class,properties={"isActive"})
  * @ApiFilter(SearchFilter::class,properties={"role.libelle":"iexact"})
- * @ORM\InheritanceType("JOINED")
  */
     class User implements AdvancedUserInterface
 {
@@ -133,7 +127,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\Column(type="date")
      * @Groups("post:all")
      * @Groups("get:all")
-     *  @Groups("get:one")
+     * @Groups("get:one")
      * @Groups("put:one")
      */
     protected $dateNaissance;
@@ -142,8 +136,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\Column(type="boolean")
      * @Groups("post:all")
      * @Groups("get:all")
-     *  @Groups("get:one")
-     *  @Groups("put:one")
+     * @Groups("get:one")
+     * @Groups("put:one")
      */
     protected $isActive;
 
@@ -151,7 +145,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\Column(type="string", length=255)
      * @Groups("get:all")
      * @Groups("post:all")
-     *  @Groups("get:one")
+     * @Groups("get:one")
      * @Groups("put:one")
      */
     protected $username;
@@ -160,10 +154,16 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\Column(type="string", length=255)
      * @Groups("get:all")
      * @Groups("post:all")
-     *  @Groups("get:one")
+     * @Groups("get:one")
      * @Groups("put:one")
      */
     protected $password;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users")
+     */
+    private $partenaire;
+
 
 
     //le constructeur
@@ -342,6 +342,18 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     public function isEnabled()
     {
         return $this->isActive;
+    }
+
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
     }
 
   

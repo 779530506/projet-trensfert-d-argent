@@ -1,15 +1,18 @@
 <?php
 namespace App\DataPersister;
 
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use App\Entity\Depot;
 use App\Entity\User;
+use App\Entity\Depot;
 use Doctrine\ORM\EntityManagerInterface;
+use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class DepotPersister implements DataPersisterInterface{
     protected $em;
-    public function __construct(EntityManagerInterface $em){
+    private $token;
+    public function __construct(EntityManagerInterface $em,TokenStorageInterface $token){
         $this->em=$em;
+        $this->token=$token;
     }
     public function supports($data): bool
     {
@@ -17,9 +20,9 @@ class DepotPersister implements DataPersisterInterface{
     }
     public function persist($data)
     {
-        $solde=$data->getCompte()->getSolde();
-        $data->getCompte()->setSolde($solde+$data->getMontant());
+        $data->getCompte()->setSolde($data->getCompte()->getSolde()+$data->getMontant());
         $data->setDateDepot(new \DateTime());
+        $data->setUserDepot($this->token->getToken()->getUser());
         $this->em->persist($data);
         $this->em->flush();
     }
