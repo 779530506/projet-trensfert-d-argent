@@ -4,10 +4,31 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
- * @ApiResource()
+ * @ApiResource(
+ *    collectionOperations={
+ *         "get"={
+ *         "normalization_context"={"groups"={"gets:transaction"}},
+ *        },
+ *         "post"={
+ *           "normalization_context"={"groups"={"post:transaction"}},
+ * }
+ *     },
+ *     itemOperations={
+ *         "get"={},
+ *         "put"={
+ *           },
+ *         "delete"={},
+ *     }
+ * 
+ * )
+ * 
+ * 
+ * 
  */
 class Transaction
 {
@@ -19,91 +40,125 @@ class Transaction
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
+     * 
+     * @Groups("gets:transaction")
      */
     private $dateTrensfert;
 
     /**
-     * @ORM\Column(type="date",  nullable=true)
+     * @ORM\Column(type="datetime",  nullable=true)
+     * @Groups("gets:transaction")
      */
     private $dateRetrait;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\GreaterThanOrEqual(1000)
+     * @Assert\LessThanOrEqual(2000000)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $montant;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups("gets:transaction")
      */
     private $status;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("gets:transaction")
      */
     private $code;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups("gets:transaction")
      */
     private $frais;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $nomExpediteur;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $prenomExpediteur;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $telExpediteur;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $cniExpediteur;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $nomBeneficiaire;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $prenomBeneficiaire;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
     private $telBeneficiaire;
 
     /**
      * @ORM\Column(type="string", length=25, nullable=true)
+     * @Groups("gets:transaction")
      */
     private $cniBeneficiaire;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("gets:transaction")
      */
     private $userTrensfert;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @Groups("gets:transaction")
      */
     private $userRetrait;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("post:transaction")
+     * @Groups("gets:transaction")
      */
-    private $compte;
+    private $compteTrensfert;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte")
+     */
+    private $compteRetrait;
 
     public function getId(): ?int
     {
@@ -302,14 +357,26 @@ class Transaction
         return $this;
     }
 
-    public function getCompte(): ?Compte
+    public function getcompteTrensfert(): ?Compte
     {
-        return $this->compte;
+        return $this->compteTrensfert;
     }
 
-    public function setCompte(?Compte $compte): self
+    public function setcompteTrensfert(?Compte $compteTrensfert): self
     {
-        $this->compte = $compte;
+        $this->compteTrensfert = $compteTrensfert;
+
+        return $this;
+    }
+
+    public function getCompteRetrait(): ?Compte
+    {
+        return $this->compteRetrait;
+    }
+
+    public function setCompteRetrait(?Compte $compteRetrait): self
+    {
+        $this->compteRetrait = $compteRetrait;
 
         return $this;
     }

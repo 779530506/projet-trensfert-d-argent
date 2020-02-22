@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Periode;
+use App\Entity\Affecter;
+use App\Entity\Compte;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -12,13 +14,33 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Periode[]    findAll()
  * @method Periode[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PeriodeRepository extends ServiceEntityRepository
+class AffecterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Periode::class);
+        parent::__construct($registry, Affecter::class);
     }
-
+    /**
+     * Undocumented function
+     *
+     * @return array|null
+     */
+    public function findAffecter():?array
+    {
+        $dateActuelle=new \DateTime() ;
+        return $this->createQueryBuilder('a')
+        ->select('u.id')
+        ->join('a.userAffecter','u')
+        ->andWhere('a.dateDebut < :dateActuelle')
+        ->andWhere('a.dateFin > :dateActuelle')
+        ->setParameters(array(
+                           'dateActuelle' =>  $dateActuelle))
+        ->getQuery()
+        ->getResult()
+    ;
+    }
+   
+   
     // /**
     //  * @return Periode[] Returns an array of Periode objects
     //  */

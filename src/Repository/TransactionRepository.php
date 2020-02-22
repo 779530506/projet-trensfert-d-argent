@@ -18,7 +18,31 @@ class TransactionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Transaction::class);
     }
+   /**
+    * verification du code
+    *
+    * @param [type] $code
+    * @return Transaction|null
+    */
+    public function findOneByCode($code):?Transaction
+    {
+        return $this->createQueryBuilder('t')
+        ->andWhere('t.code = :val')
+        ->setParameter('val', $code)
+        ->getQuery()
+        ->getOneOrNullResult()
+    ;
+    }
 
+    public function findOneById($id):?Transaction
+    {
+        return $this->createQueryBuilder('t')
+        ->andWhere('t.id = :val')
+        ->setParameter('val', $id)
+        ->getQuery()
+        ->getOneOrNullResult()
+    ;
+    }
     // /**
     //  * @return Transaction[] Returns an array of Transaction objects
     //  */

@@ -67,6 +67,7 @@ class Compte
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $userCreateur;
 
@@ -78,14 +79,29 @@ class Compte
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("get:all")
      */
     private $partenaire;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups("get:all")
+     */
+    private $soldeInitiale;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affecter", mappedBy="compteAffecter", orphanRemoval=true)
+     */
+    private $affecters;
+
 
 
     public function __construct()
     {
         $this->depots = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->periodes = new ArrayCollection();
+        $this->affecters = new ArrayCollection();
     }
 
 
@@ -188,7 +204,7 @@ class Compte
     {
         if (!$this->transactions->contains($transaction)) {
             $this->transactions[] = $transaction;
-            $transaction->setCompte($this);
+            $transaction->setCompteTrensfert($this);
         }
 
         return $this;
@@ -199,8 +215,8 @@ class Compte
         if ($this->transactions->contains($transaction)) {
             $this->transactions->removeElement($transaction);
             // set the owning side to null (unless already changed)
-            if ($transaction->getCompte() === $this) {
-                $transaction->setCompte(null);
+            if ($transaction->getCompteTrensfert() === $this) {
+                $transaction->setCompteTrensfert(null);
             }
         }
 
@@ -219,6 +235,48 @@ class Compte
         return $this;
     }
 
-   
+    public function getSoldeInitiale(): ?float
+    {
+        return $this->soldeInitiale;
+    }
+
+    public function setSoldeInitiale(float $soldeInitiale): self
+    {
+        $this->soldeInitiale = $soldeInitiale;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affecter[]
+     */
+    public function getAffecters(): Collection
+    {
+        return $this->affecters;
+    }
+
+    public function addAffecter(Affecter $affecter): self
+    {
+        if (!$this->affecters->contains($affecter)) {
+            $this->affecters[] = $affecter;
+            $affecter->setCompteAffecter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffecter(Affecter $affecter): self
+    {
+        if ($this->affecters->contains($affecter)) {
+            $this->affecters->removeElement($affecter);
+            // set the owning side to null (unless already changed)
+            if ($affecter->getCompteAffecter() === $this) {
+                $affecter->setCompteAffecter(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }

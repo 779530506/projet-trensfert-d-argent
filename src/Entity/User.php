@@ -164,12 +164,18 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      */
     private $partenaire;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affecter", mappedBy="userAffecter", orphanRemoval=true)
+     */
+    private $affecters;
 
+   
 
     //le constructeur
     public function __construct(){
         $this->isActive=false;
         $this->depots = new ArrayCollection();
+        $this->affecters = new ArrayCollection();
 
     }
     public function getId(): ?int
@@ -352,6 +358,37 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     public function setPartenaire(?Partenaire $partenaire): self
     {
         $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affecter[]
+     */
+    public function getAffecters(): Collection
+    {
+        return $this->affecters;
+    }
+
+    public function addAffecter(Affecter $affecter): self
+    {
+        if (!$this->affecters->contains($affecter)) {
+            $this->affecters[] = $affecter;
+            $affecter->setUserAffecter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffecter(Affecter $affecter): self
+    {
+        if ($this->affecters->contains($affecter)) {
+            $this->affecters->removeElement($affecter);
+            // set the owning side to null (unless already changed)
+            if ($affecter->getUserAffecter() === $this) {
+                $affecter->setUserAffecter(null);
+            }
+        }
 
         return $this;
     }

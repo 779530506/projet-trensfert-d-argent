@@ -27,6 +27,15 @@ class CompteRepository extends ServiceEntityRepository
         $stmt->execute();
         return $stmt->fetch();
     }
+    public function findOneById($id): ?Compte
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 
     // /**
     //  * @return Compte[] Returns an array of Compte objects

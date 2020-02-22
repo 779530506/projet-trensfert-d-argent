@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Compte;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -17,6 +18,28 @@ class UserRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
+    }
+   /**
+    * recuperer le user affecter a une periode valide
+    *
+    * @param [type] $id
+    * @return Compte|null
+    */
+    public function getIdCompte($id)
+    {
+        $dateActuelle=new \DateTime() ;
+        return $this->createQueryBuilder('u')
+        ->select('c.id')
+        ->andWhere('u.id = :id')
+        ->andWhere(':dateActuelle BETWEEN a.dateDebut AND a.dateFin')
+        ->join('u.affecters', 'a')
+        ->join('a.compteAffecter','c')
+        ->setParameters(array(
+                           'id'=>$id,
+                           'dateActuelle' =>  $dateActuelle))
+        ->getQuery()
+        ->getOneOrNullResult()
+    ;
     }
 
     // /**

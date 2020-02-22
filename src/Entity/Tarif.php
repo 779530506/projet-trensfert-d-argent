@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TarifRepository")
+ * @ApiResource()
  */
 class Tarif
 {
@@ -17,12 +19,12 @@ class Tarif
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="float")
      */
     private $montantDebut;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="float")
      */
     private $montantFin;
 
@@ -36,30 +38,7 @@ class Tarif
         return $this->id;
     }
 
-    public function getMontantDebut(): ?\DateTimeInterface
-    {
-        return $this->montantDebut;
-    }
-
-    public function setMontantDebut(\DateTimeInterface $montantDebut): self
-    {
-        $this->montantDebut = $montantDebut;
-
-        return $this;
-    }
-
-    public function getMontantFin(): ?\DateTimeInterface
-    {
-        return $this->montantFin;
-    }
-
-    public function setMontantFin(\DateTimeInterface $montantFin): self
-    {
-        $this->montantFin = $montantFin;
-
-        return $this;
-    }
-
+   
     public function getFrais(): ?float
     {
         return $this->frais;
@@ -68,6 +47,58 @@ class Tarif
     public function setFrais(float $frais): self
     {
         $this->frais = $frais;
+
+        return $this;
+    }
+
+    /**
+     * Set the value of id
+     *
+     * @return  self
+     */ 
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of montantDebut
+     */ 
+    public function getMontantDebut()
+    {
+        return $this->montantDebut;
+    }
+
+    /**
+     * Set the value of montantDebut
+     *
+     * @return  self
+     */ 
+    public function setMontantDebut($montantDebut)
+    {
+        $this->montantDebut = $montantDebut;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of montantFin
+     */ 
+    public function getMontantFin()
+    {
+        return $this->montantFin;
+    }
+
+    /**
+     * Set the value of montantFin
+     *
+     * @return  self
+     */ 
+    public function setMontantFin($montantFin)
+    {
+        $this->montantFin = $montantFin;
 
         return $this;
     }

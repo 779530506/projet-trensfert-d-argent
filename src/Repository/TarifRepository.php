@@ -18,7 +18,28 @@ class TarifRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tarif::class);
     }
+  
+  /**
+   * recuperer le frais
+   *
+   * @param [type] $montant
+   * 
+   */
+    public function findOneByFrais($montant)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = ' SELECT frais FROM tarif as t WHERE t.montant_debut<=:montant 
+        AND t.montant_fin >= :montant';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(
+            array(
+                'montant'=>$montant
+            )
+        );
+        return $stmt->fetch();
+    }
 
+ 
     // /**
     //  * @return Tarif[] Returns an array of Tarif objects
     //  */
