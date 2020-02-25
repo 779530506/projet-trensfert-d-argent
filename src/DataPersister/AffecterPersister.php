@@ -29,7 +29,7 @@ class AffecterPersister implements DataPersisterInterface{
     }
     public function persist($data)
     {   //recuperer  user qui affecte
-        $userQuiAffecte=$data->getUserQuiAffecte();
+        $userQuiAffecte=$this->token->getToken()->getUser();    
          //recuperer  user  affecter
          $userAffecter=$data->getUserAffecter();
         // recuperer le compte
@@ -45,7 +45,7 @@ class AffecterPersister implements DataPersisterInterface{
        if($nbrCompteAffecter == 0 ){  
            if($userQuiAffecte->getPartenaire()!==null){
             if($userQuiAffecte->getPartenaire()->getId() ===$compte->getPartenaire()->getId()){
-                $data->setUserQuiAffecte($this->token->getToken()->getUser());   
+                $data->setUserQuiAffecte($userQuiAffecte);
                 $this->em->persist($data);
                } else{
                 throw new HttpException(400,"Ce compte ne vous appartient pas");
