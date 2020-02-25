@@ -23,20 +23,22 @@ class AffecterRepository extends ServiceEntityRepository
     /**
      * Undocumented function
      *
-     * @return array|null
+     * 
      */
-    public function findAffecter():?array
+    public function findAffecter($id)
     {
         $dateActuelle=new \DateTime() ;
         return $this->createQueryBuilder('a')
-        ->select('u.id')
+        ->select('Count(u.id) as nombreId')
         ->join('a.userAffecter','u')
-        ->andWhere('a.dateDebut < :dateActuelle')
-        ->andWhere('a.dateFin > :dateActuelle')
+        ->andWhere('u.id=:id')
+        ->andWhere(' a.dateFin > :dateActuelle')
+        //->andWhere('a.dateFin > :dateActuelle')
         ->setParameters(array(
+                           'id' => $id,
                            'dateActuelle' =>  $dateActuelle))
         ->getQuery()
-        ->getResult()
+        ->getSingleScalarResult()
     ;
     }
    

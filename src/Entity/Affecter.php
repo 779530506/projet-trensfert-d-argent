@@ -46,6 +46,12 @@ class Affecter
      */
     private $userAffecter;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $userQuiAffecte;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -95,6 +101,18 @@ class Affecter
     public function setUserAffecter(?User $userAffecter): self
     {
         $this->userAffecter = $userAffecter;
+
+        return $this;
+    }
+
+    public function getUserQuiAffecte(): ?User
+    {
+        return $this->userQuiAffecte;
+    }
+
+    public function setUserQuiAffecte(?User $userQuiAffecte): self
+    {
+        $this->userQuiAffecte = $userQuiAffecte;
 
         return $this;
     }

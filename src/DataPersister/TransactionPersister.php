@@ -41,6 +41,7 @@ class TransactionPersister implements DataPersisterInterface{
         $montant=$data->getMontant();
         $user=$this->token->getToken()->getUser();
         $idCompte=$this->userRepository->getIdCompte($user->getId())["id"];
+        //dd($idCompte);
         $compteAffecter=$this->compteRepository->findOneById($idCompte);
         if($compteAffecter !== null){
             if(!$this->transactionRepository->findOneById($data->getId())){
@@ -58,7 +59,10 @@ class TransactionPersister implements DataPersisterInterface{
                 $solde=$data->getCompteTrensfert()->getSolde();
                 if( $solde - $montant >=0   ){
                   $data->getCompteTrensfert()->setSolde($solde-$montant);
-                }else{ $verifier=false; }
+                }else{ 
+                    throw new HttpException(400,"Votre solde ne vous permet de faire un trensfert d'argent avec ce montant 
+                      : veuillez essayer de faire un retrait") ; 
+                 }
              }elseif($data->getCniBeneficiaire() != null && $data->getStatus()===true){
                   $data->setCompteRetrait($compteAffecter);
                   $solde=$data->getCompteRetrait()->getSolde();
@@ -68,23 +72,19 @@ class TransactionPersister implements DataPersisterInterface{
                       $data->setUserRetrait($user);
                       $data->setDateRetrait(new \DateTime());     
                       $data->setStatus(false);
-                     }else{   $verifier=false; }
-                   }else{ $verifier=false; }
+                     }else{   
+                         throw new HttpException(400,"Votre solde ne vous permet de faire une transation") ; 
+                        }
+                   }
       
         }else{
             throw new HttpException(400,
                     "vous n'avez pas de compte actif");
         }
       
-             //persister
-             if($verifier){
+            
                 $this->em->persist($data);
                 $this->em->flush();
-               }else{
-                   throw new HttpException(400,
-                    "Impossible de faire une transaction;
-                     veuillez verifier si votre solde vous permet d'effectuer cette operation");
-               }
             
         
     }
