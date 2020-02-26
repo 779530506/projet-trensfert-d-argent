@@ -161,6 +161,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users")
+     * 
      */
     private $partenaire;
 
@@ -169,6 +170,16 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      */
     private $affecters;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="users")
+     */
+    private $userCreate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="userCreate", orphanRemoval=true)
+     */
+    private $users;
+
    
 
     //le constructeur
@@ -176,6 +187,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
         $this->isActive=false;
         $this->depots = new ArrayCollection();
         $this->affecters = new ArrayCollection();
+        $this->users = new ArrayCollection();
 
     }
     public function getId(): ?int
@@ -387,6 +399,49 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
             // set the owning side to null (unless already changed)
             if ($affecter->getUserAffecter() === $this) {
                 $affecter->setUserAffecter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUserCreate(): ?self
+    {
+        return $this->userCreate;
+    }
+
+    public function setUserCreate(?self $userCreate): self
+    {
+        $this->userCreate = $userCreate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(self $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setUserCreate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(self $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            // set the owning side to null (unless already changed)
+            if ($user->getUserCreate() === $this) {
+                $user->setUserCreate(null);
             }
         }
 

@@ -1,17 +1,13 @@
 <?php
 namespace App\DataPersister;
-
-use App\Entity\Tarif;
 use App\Entity\Transaction;
 use App\Repository\UserRepository;
 use App\Repository\TarifRepository;
 use App\Repository\CompteRepository;
-use App\Repository\AffecterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TransactionRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TransactionPersister implements DataPersisterInterface{
@@ -41,7 +37,6 @@ class TransactionPersister implements DataPersisterInterface{
         $montant=$data->getMontant();
         $user=$this->token->getToken()->getUser();
         $idCompte=$this->userRepository->getIdCompte($user->getId())["id"];
-       // dd($idCompte);
         $compteAffecter=$this->compteRepository->findOneById($idCompte);
         if($compteAffecter !== null){
             if(!$this->transactionRepository->findOneById($data->getId())){
@@ -97,6 +92,5 @@ class TransactionPersister implements DataPersisterInterface{
     private function generer()
     {
         return rand(0,999999999);
-        
     }
 }

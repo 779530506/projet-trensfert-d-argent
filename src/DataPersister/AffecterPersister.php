@@ -1,10 +1,8 @@
 <?php
 namespace App\DataPersister;
 use App\Entity\Affecter;
-use App\Entity\Partenaire;
 use App\Repository\UserRepository;
 use App\Repository\AffecterRepository;
-use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;

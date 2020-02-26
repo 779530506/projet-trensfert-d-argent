@@ -31,15 +31,25 @@ class AppFixtures extends Fixture
        $manager->persist($roleCaissier);
 
        $rolePartenaire=new Role();
-       $rolePartenaire->setLibelle("Partenaire");
+       $rolePartenaire->setLibelle("PARTENAIRE");
        $manager->persist($rolePartenaire);
+
+       //role admin partenaire
+       $adminPartenaire=new Role();
+       $adminPartenaire->setLibelle("ADMINPARTENAIRE");
+       $manager->persist($adminPartenaire);
+
+        //role user partenaire
+        $userPartenaire=new Role();
+        $userPartenaire->setLibelle("USERPARTENAIRE");
+        $manager->persist($userPartenaire);
 
        $manager->flush();
 
         $faker = Factory::create('fr_FR');
 
         // on créé 10 users
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $user = new user();
             $user->setNom($faker->lastName);
             $user->setPrenom($faker->name);
