@@ -1,5 +1,6 @@
 <?php
 namespace App\DataPersister;
+use App\Osms;
 use App\Entity\Transaction;
 use App\Repository\UserRepository;
 use App\Repository\TarifRepository;
@@ -77,6 +78,28 @@ class TransactionPersister implements DataPersisterInterface{
                     "vous n'avez pas de compte actif");
         }
       
+             //API SMS 
+  // retrieve an access token
+  $config = array(
+    'clientId' => 'Fc4M5NMCMgmqWAJVcHA2dfpH4xbQ7Tow',
+    'clientSecret' => 'yBxz88VLMIS0rgId'
+);
+
+$osms = new Osms($config);
+
+// retrieve an access token
+$response = $osms->getTokenFromConsumerKey();
+
+if (!empty($response['access_token'])) {
+    $senderAddress = 'tel:+221'.$data->getTelExpediteur();
+    $receiverAddress = 'tel:+221'.$data->getTelBeneficiaire();
+    $message = 'Hello World!';
+    $senderName = 'Optimus Prime';
+
+    $osms->sendSMS($senderAddress, $receiverAddress, $message, $senderName);
+} else {
+    // error
+}
             
                 $this->em->persist($data);
                 $this->em->flush();

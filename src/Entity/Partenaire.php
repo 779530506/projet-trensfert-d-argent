@@ -42,6 +42,12 @@ class Partenaire
      */
     private $comptes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $userPartenaire;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -135,6 +141,18 @@ class Partenaire
                 $compte->setPartenaire(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUserPartenaire(): ?User
+    {
+        return $this->userPartenaire;
+    }
+
+    public function setUserPartenaire(?User $userPartenaire): self
+    {
+        $this->userPartenaire = $userPartenaire;
 
         return $this;
     }

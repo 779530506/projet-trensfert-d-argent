@@ -30,6 +30,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *              }, 
  *          "post"={
  *            "normalization_context"={"groups"={"post:all"}},
+ *            "access_controle"="is_granted('POST',object)"
  *   }
  *     },
  *     itemOperations={
@@ -51,6 +52,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("get:all")
+     * @Groups("get:one")
      */
     protected $id;
 
@@ -107,6 +110,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     /**
      *    pour la liaison avec la table role
      * @ORM\ManyToOne(targetEntity="App\Entity\Role",cascade={"persist"}, inversedBy="users")
+     * 
      *  @Groups("get:all")
      *  @Groups("post:all")
      *  @Groups("get:one")
@@ -177,6 +181,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="userCreate", orphanRemoval=true)
+     * 
      */
     private $users;
 
