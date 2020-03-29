@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
  * @ApiResource(
  *     collectionOperations={
  *         "get"={
- *         "normalization_context"={"groups"={"get:all"}},
+ *         "normalization_context"={"groups"={"get:all-compte"}},
  *        },
  *         "post"={}
  *     },
@@ -40,7 +40,7 @@ class Compte
 
     /**
      * @ORM\Column(type="string", length=9)
-     * @Groups("get:all")
+     * @Groups("get:all-compte")
      */
     private $numeroCompte;
 
@@ -49,13 +49,13 @@ class Compte
      * @Assert\GreaterThanOrEqual(
      *     value = 500000
      * )
-     * @Groups("get:all")
+     * @Groups("get:all-compte")
      */
     private $solde;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups("get:all")
+     * @Groups("get:all-compte")
      */
     private $createdDate;
 
@@ -79,7 +79,7 @@ class Compte
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("get:all")
+     * @Groups("get:all-compte")
      */
     private $partenaire;
 

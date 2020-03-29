@@ -52,52 +52,56 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("post:all")
      * @Groups("get:all")
      * @Groups("get:one")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=55, nullable=false)
      * @Groups("get:all")
      * @Groups("post:all")
      * @Groups("get:one")
      * @Groups("put:one")
+     * @Groups("get:all-compte")
      */
     protected $nom;
 
      /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=55, nullable=false)
      * @Groups("get:all")
      * @Groups("post:all")
      *  @Groups("get:one")
      * @Groups("put:one")
+     * @Groups("get:all-compte")
      */
     protected $prenom;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=100, nullable=false)
      * @Assert\Email()
      * @Groups("get:all")
      * @Groups("post:all")
      * @Groups("put:one")
      * @Groups("get:one")
-     * 
+     * @Groups("get:all-compte")
      */
     protected $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=25, nullable=false)
      * @Groups("get:all") 
      * @Groups("post:all")
      * @Groups("get:one") 
      * @Groups("put:one")
+     * @Groups("get:all-compte")
      */
     protected $telephon;
 
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      *  @Groups("get:all")
      *  @Groups("post:all")
      *  @Groups("get:one")
@@ -128,7 +132,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=false)
      * @Groups("post:all")
      * @Groups("get:all")
      * @Groups("get:one")
@@ -137,7 +141,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     protected $dateNaissance;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=false)
      * @Groups("post:all")
      * @Groups("get:all")
      * @Groups("get:one")
@@ -146,19 +150,18 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     protected $isActive;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=155)
      * @Groups("get:all")
      * @Groups("post:all")
      * @Groups("get:one")
      * @Groups("put:one")
+     * @Groups("get:all-compte")
      */
     protected $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups("get:all")
+     * @ORM\Column(type="string")
      * @Groups("post:all")
-     * @Groups("get:one")
      * @Groups("put:one")
      */
     protected $password;

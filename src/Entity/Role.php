@@ -16,7 +16,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
      * @ApiResource(
      * )
  * )
- * @ApiFilter(SearchFilter::class,properties={"libelle":"iexact"})
+ * @ApiFilter(SearchFilter::class,properties={"libelle":"exact"})
  */
 class Role
 {
@@ -24,6 +24,7 @@ class Role
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("get:one")
      */
     private $id;
 

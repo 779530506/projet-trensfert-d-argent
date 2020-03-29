@@ -5,7 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
@@ -22,12 +25,15 @@ class Partenaire
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+     * @ApiFilter(SearchFilter::class,properties={"ninea":"exact"})
+     * @Groups("get:all-compte")
      */
     private $ninea;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+     * @Groups("get:all-compte")
      */
     private $registreDuCommerce;
 
@@ -45,6 +51,7 @@ class Partenaire
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("get:all-compte")
      */
     private $userPartenaire;
 
