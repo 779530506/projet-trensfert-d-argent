@@ -27,7 +27,8 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
  *         "delete"={},
  *     }
  * )
- * @ApiFilter(SearchFilter::class,properties={"numeroCompte":"ipartial"})
+ * @ApiFilter(SearchFilter::class,properties={"numeroCompte":"partial"})
+ * @ApiFilter(SearchFilter::class,properties={"numeroCompte":"exact"})
  */
 class Compte
 {
@@ -39,7 +40,7 @@ class Compte
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=9)
+     * @ORM\Column(type="string", length=9, unique=true)
      * @Groups("get:all-compte")
      */
     private $numeroCompte;

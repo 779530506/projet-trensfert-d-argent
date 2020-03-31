@@ -25,6 +25,7 @@ class Role
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Groups("get:one")
+     * @Groups("get:all")
      */
     private $id;
 

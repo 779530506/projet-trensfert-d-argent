@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Entity\Depot;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class DepotPersister implements DataPersisterInterface{
@@ -20,7 +21,10 @@ class DepotPersister implements DataPersisterInterface{
     }
     public function persist($data)
     {
-        $data->getCompte()->setSolde($data->getCompte()->getSolde()+$data->getMontant());
+        if($data->getCompte()->getSoldeInitiale()+$data->getMontant() > 2000000){
+            throw new HttpException(400,"votre solde doit etre inférieur à 2 000 000");
+        }
+        $data->getCompte()->setSoldeInitiale($data->getCompte()->getSoldeInitiale()+$data->getMontant());
         $data->setDateDepot(new \DateTime());
         $data->setUserDepot($this->token->getToken()->getUser());
         $this->em->persist($data);
