@@ -22,7 +22,7 @@ class DepotPersister implements DataPersisterInterface{
     public function persist($data)
     {
         if($data->getCompte()->getSoldeInitiale()+$data->getMontant() > 2000000){
-            throw new HttpException(400,"votre solde doit etre inférieur à 2 000 000");
+            throw new HttpException(420,"votre solde doit etre inférieur à 2 000 000");
         }
         $data->getCompte()->setSoldeInitiale($data->getCompte()->getSoldeInitiale()+$data->getMontant());
         $data->setDateDepot(new \DateTime());

@@ -30,7 +30,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *              }, 
  *          "post"={
  *            "normalization_context"={"groups"={"post:all"}},
- *            "access_controle"="is_granted('POST',object)"
  *   }
  *     },
  *     itemOperations={
@@ -45,6 +44,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * )
  * @ApiFilter(BooleanFilter::class,properties={"isActive"})
  * @ApiFilter(SearchFilter::class,properties={"role.libelle":"iexact"})
+ * @ApiFilter(SearchFilter::class,properties={"username":"ipartial"})
  */
     class User implements AdvancedUserInterface
 {
@@ -55,6 +55,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("post:all")
      * @Groups("get:all")
      * @Groups("get:one")
+     * @Groups("get:all-partenaire")
      */
     protected $id;
 
@@ -156,6 +157,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
      * @Groups("get:one")
      * @Groups("put:one")
      * @Groups("get:all-compte")
+     * @Groups("get:all-partenaire")
      */
     protected $username;
 
@@ -167,6 +169,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
     protected $password;
 
     /**
+     * ceci concerne que les utilisateur partenaire
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users")
      * 
      */

@@ -26,6 +26,18 @@ class PartenaireRepository extends ServiceEntityRepository
         $stmt->execute();
         return $stmt->fetch();
     }
+    /**
+      * @return Partenaire[] Returns an array of Partenaire objects
+      */
+    public function findByIdUser($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.userPartenaire= :val')
+            ->setParameter('val', $id)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     // /**
     //  * @return Partenaire[] Returns an array of Partenaire objects

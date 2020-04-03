@@ -12,7 +12,24 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
- * @ApiResource()
+ * @ApiResource(
+ *    collectionOperations={
+ *     "get"={
+ *                "normalization_context"={"groups"={"get:all-partenaire"}},
+ *              }, 
+ *          "post"={
+ *   }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *        },
+ *         "put"={
+ *      },
+ *         "delete"={},
+ *     }
+ * )
+ * @ApiFilter(SearchFilter::class,properties={"ninea":"exact"})
+ * @ApiFilter(SearchFilter::class,properties={"userPartenaire.username":"iexact"})
  */
 class Partenaire
 {
@@ -20,31 +37,35 @@ class Partenaire
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("get:all-partenaire")
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false, unique=true)
-     * @ApiFilter(SearchFilter::class,properties={"ninea":"exact"})
      * @Groups("get:all-compte")
+     * @Groups("get:all-partenaire")
      */
     private $ninea;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false, unique=true)
      * @Groups("get:all-compte")
+     * @Groups("get:all-partenaire")
      */
     private $registreDuCommerce;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("get:all-partenaire")
      */
     private $users;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="partenaire", orphanRemoval=true)
+     * @Groups("get:all-partenaire")
      */
     private $comptes;
 
@@ -52,6 +73,7 @@ class Partenaire
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("get:all-compte")
+     * @Groups("get:all-partenaire")
      */
     private $userPartenaire;
 

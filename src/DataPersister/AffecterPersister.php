@@ -33,7 +33,7 @@ class AffecterPersister implements DataPersisterInterface{
         // recuperer le compte
         $compte=$data->getCompteAffecter();
         
-        //verifier si l'utilisateur n'a pas un compte affecter affecter
+        //verifier si l'utilisateur n'a pas un compte affecter 
         $nbrCompteAffecter=$this->repoAffecter->findAffecter($userAffecter->getId());
 
         if($userQuiAffecte == null || $compte ==null || $userAffecter==null){
